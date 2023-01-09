@@ -1,5 +1,7 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Elections extends Model {
     /**
@@ -8,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      // define association here
       Elections.belongsTo(models.Users, {
         foreignKey: "userId",
       });
@@ -21,7 +24,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "electionId",
       });
     }
-    static createElection(name, userId) {
+    static findAllElectionOfUser(userId)
+    {
+      return this.findAll({where:{userId}});
+    }
+    static createNewElection(name, userId) {
       return this.create({
         name,
         start: false,
@@ -29,84 +36,14 @@ module.exports = (sequelize, DataTypes) => {
         userId,
       });
     }
-    static created(userId) {
-      return this.findAll({
-        where: {
-          userId,
-        },
-      });
-    }
-    updateName(name) {
-      return this.update({ name });
-    }
-    async hasInsufficientQuestions(eid) {
-      const election = await Elections.findByPk(eid, {
-        include: [
-          {
-            model: sequelize.models.Questions,
-            include: sequelize.models.Options,
-          },
-          { model: sequelize.models.Voters, include: sequelize.models.Votes },
-        ],
-      });
-
-      return election.Questions.length === 0;
-    }
-    async hasInsufficientOptions(eid) {
-      const election = await Elections.findByPk(eid, {
-        include: [
-          {
-            model: sequelize.models.Questions,
-            include: sequelize.models.Options,
-          },
-          { model: sequelize.models.Voters, include: sequelize.models.Votes },
-        ],
-      });
-
-      const count = election.Questions.filter(
-        (question) => question.Options.length < 2
-      );
-
-      return count.length !== 0;
-    }
-    async hasInsufficientVoters(eid) {
-      const election = await Elections.findByPk(eid, {
-        include: [
-          {
-            model: sequelize.models.Questions,
-            include: sequelize.models.Options,
-          },
-          { model: sequelize.models.Voters, include: sequelize.models.Votes },
-        ],
-      });
-
-      return election.Voters.length < 2;
-    }
-    updateStart(start) {
-      return this.update({ start });
-    }
-    updateEnd(end) {
-      return this.update({ end });
-    }
-    static async remove(id, userId) {
-      return this.destroy({
-        where: {
-          id,
-          userId,
-        },
-      });
-    }
   }
-  Elections.init(
-    {
-      name: DataTypes.STRING,
-      start: DataTypes.BOOLEAN,
-      end: DataTypes.BOOLEAN,
-    },
-    {
-      sequelize,
-      modelName: "Elections",
-    }
-  );
+  Elections.init({
+    name: DataTypes.STRING,
+    start: DataTypes.STRING,
+    end: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Elections',
+  });
   return Elections;
 };

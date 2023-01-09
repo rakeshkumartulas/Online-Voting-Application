@@ -24,7 +24,7 @@
     </div>
         <div class="grid grid-cols-4">
             <div class="col-start-2 col-span-2">
-                <h1>Election Menu Ballot(Question/Voters)</h1>
+                <h1>Welcome the Election Ballot(Question/Voters)</h1>
                 <h3>Election Name: <%=election.name %></h1>
                     <div>
                         <% if(messages && messages.error && messages.error.length > 0)  { %>
@@ -55,7 +55,7 @@
                     if(election.Questions.length==0)
                     {
                     %>
-                    <p>No question for Election </p>
+                    <p>You have not created any Question yet in this election.</p>
                    
                     
                     <%
@@ -66,7 +66,7 @@
                         <tr>
                             <th class="border border-slate-300">S.No.</th>
                             <th class="border border-slate-300">Title</th> 
-                            <th class="border border-slate-300">Details</Details></th>
+                            <th class="border border-slate-300">Description</th>
                             <th class="border border-slate-300">Election ID</th>
 
                         </tr>
